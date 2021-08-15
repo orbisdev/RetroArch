@@ -134,13 +134,15 @@ static void resampler_sinc_process_neon_intrinsics(void *re_, struct resampler_d
          unsigned taps            = resamp->taps;
          while (resamp->time < phases)
          {
-            float32x2_t half, res;
+            float32x2_t half_l, res_l;
+            float32x2_t half_r, res_r;
             unsigned i;
             unsigned phase           = resamp->time >> resamp->subphase_bits;
             const float *phase_table = resamp->phase_table + phase * taps;
-            float *delta_table       = phase_table + taps;
+            float *delta_table       = resamp->phase_table + taps;
 	    float delta              = (float)(resamp->time  & resamp->subphase_mask) * resamp->subphase_mod;
-	    float32x4_t sum          = vdupq_n_f32(0.0f);
+	    float32x4_t sum_l          = vdupq_n_f32(0.0f);
+	    float32x4_t sum_r        = vdupq_n_f32(0.0f);
 	    
 	    for (i = 0; i < taps; i += 4)
             {
@@ -150,14 +152,17 @@ static void resampler_sinc_process_neon_intrinsics(void *re_, struct resampler_d
 	       float32x4_t buf_r   = vld1q_f32(buffer_r    + i);
 	       float32x4_t _sinc   = vmlaq_n_f32(_phases, deltas, delta);
 
-	       sum                 = vmlaq_f32(sum, buf_l, _sinc);
-	       sum                += vmlaq_f32(sum, buf_r, _sinc);
+	       sum_l               = vmlaq_f32(sum_l, buf_l, _sinc);
+	       sum_r               = vmlaq_f32(sum_r, buf_r, _sinc);
             }
 
-	    half                   = vadd_f32(vget_low_f32(sum), vget_high_f32(sum));
-	    res                    = vpadd_f32(half, half);
+	    half_l                 = vadd_f32(vget_low_f32(sum_l), vget_high_f32(sum_l));
+	    res_l                  = vpadd_f32(half_l, half_l);
+	    half_r                 = vadd_f32(vget_low_f32(sum_r), vget_high_f32(sum_r));
+	    res_r                  = vpadd_f32(half_r, half_r);
 
-	    vst1_lane_f32(output, res, 0);
+	    vst1_lane_f32(output,     res_l, 0);
+	    vst1_lane_f32(output + 1, res_r, 0);
 
             output += 2;
             out_frames++;
