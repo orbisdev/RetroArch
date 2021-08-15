@@ -146,10 +146,12 @@ static void resampler_sinc_process_neon_intrinsics(void *re_, struct resampler_d
             {
                float32x4_t _phases = vld1q_f32(phase_table + i);
 	       float32x4_t deltas  = vld1q_f32(delta_table + i);
-	       float32x4_t buf     = vld1q_f32(buffer      + i);
+	       float32x4_t buf_l   = vld1q_f32(buffer_l    + i);
+	       float32x4_t buf_r   = vld1q_f32(buffer_r    + i);
 	       float32x4_t _sinc   = vmlaq_n_f32(_phases, deltas, delta);
 
-	       sum                 = vmlaq_f32(sum, buf, _sinc);
+	       sum                 = vmlaq_f32(sum, buf_l, _sinc);
+	       sum                += vmlaq_f32(sum, buf_r, _sinc);
             }
 
 	    half                   = vadd_f32(vget_low_f32(sum), vget_high_f32(sum));
@@ -166,7 +168,6 @@ static void resampler_sinc_process_neon_intrinsics(void *re_, struct resampler_d
 
    data->output_frames = out_frames;
 }
-#endif
 #else
 #ifdef WANT_NEON
 /* Assumes that taps >= 8, and that taps is a multiple of 8. */
