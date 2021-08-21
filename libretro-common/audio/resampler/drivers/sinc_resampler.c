@@ -111,7 +111,7 @@ static void resampler_sinc_process_neon_intrinsics(void *re_, struct resampler_d
 
    while (frames)
    {
-      while (frames && resamp->time >= phases)
+      while (resamp->time >= phases)
       {
          /* Push in reverse to make filter more obvious. */
          if (!resamp->ptr)
@@ -134,35 +134,29 @@ static void resampler_sinc_process_neon_intrinsics(void *re_, struct resampler_d
          unsigned taps            = resamp->taps;
          while (resamp->time < phases)
          {
-            float32x2_t half_l, res_l;
-            float32x2_t half_r, res_r;
-            unsigned i;
+            int i;
             unsigned phase           = resamp->time >> resamp->subphase_bits;
             const float *phase_table = resamp->phase_table + phase * taps;
-            float *delta_table       = resamp->phase_table + taps;
-	    float delta              = (float)(resamp->time  & resamp->subphase_mask) * resamp->subphase_mod;
-	    float32x4_t sum_l          = vdupq_n_f32(0.0f);
-	    float32x4_t sum_r        = vdupq_n_f32(0.0f);
-	    
-	    for (i = 0; i < taps; i += 4)
-            {
-               float32x4_t _phases = vld1q_f32(phase_table + i);
-	       float32x4_t deltas  = vld1q_f32(delta_table + i);
-	       float32x4_t buf_l   = vld1q_f32(buffer_l    + i);
-	       float32x4_t buf_r   = vld1q_f32(buffer_r    + i);
-	       float32x4_t _sinc   = vmlaq_n_f32(_phases, deltas, delta);
 
-	       sum_l               = vmlaq_f32(sum_l, buf_l, _sinc);
-	       sum_r               = vmlaq_f32(sum_r, buf_r, _sinc);
-            }
+             float32x4_t p1 = {0, 0, 0, 0}, p2 = {0, 0, 0, 0};
+             float32x2_t p3, p4;
+             
+             for (i = 0; i < taps; i += 8)
+             {
+                 float32x4x2_t coeff8 = vld2q_f32(&phase_table[i]);
+                 float32x4x2_t left8 = vld2q_f32(&buffer_l[i]);
+                 float32x4x2_t right8 = vld2q_f32(&buffer_r[i]);
 
-	    half_l                 = vadd_f32(vget_low_f32(sum_l), vget_high_f32(sum_l));
-	    res_l                  = vpadd_f32(half_l, half_l);
-	    half_r                 = vadd_f32(vget_low_f32(sum_r), vget_high_f32(sum_r));
-	    res_r                  = vpadd_f32(half_r, half_r);
+                 p1 = vmlaq_f32(p1,  left8.val[0], coeff8.val[0]);
+                 p2 = vmlaq_f32(p2, right8.val[0], coeff8.val[0]);
+                 p1 = vmlaq_f32(p1,  left8.val[1], coeff8.val[1]);
+                 p2 = vmlaq_f32(p2, right8.val[1], coeff8.val[1]);
+             }
 
-	    vst1_lane_f32(output,     res_l, 0);
-	    vst1_lane_f32(output + 1, res_r, 0);
+             p3 = vadd_f32(vget_low_f32(p1), vget_high_f32(p1));
+             p4 = vadd_f32(vget_low_f32(p2), vget_high_f32(p2));
+             vst1_f32(output, vpadd_f32(p3, p4));
+
 
             output += 2;
             out_frames++;
