@@ -700,7 +700,7 @@ void input_config_reset(void);
 #define DOS_KEYBOARD_PORT DEFAULT_MAX_PADS
 #elif defined(XENON)
 #define DEFAULT_MAX_PADS 4
-#elif defined(VITA) || defined(SN_TARGET_PSP2)
+#elif defined(VITA) || defined(SN_TARGET_PSP2) || defined(ORBIS)
 #define DEFAULT_MAX_PADS 4
 #elif defined(PSP)
 #define DEFAULT_MAX_PADS 1

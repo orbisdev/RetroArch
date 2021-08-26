@@ -1264,7 +1264,7 @@ const char *retro_vfs_dirent_get_name_impl(libretro_vfs_implementation_dir *rdir
    if (name)
       free(name);
    return (char*)rdir->entry.cFileName;
-#elif defined(VITA) || defined(PSP) || defined(ORBIS) || defined(__PSL1GHT__) || defined(__PS3__)
+#elif defined(VITA) || defined(PSP) || defined(__PSL1GHT__) || defined(__PS3__)
    return rdir->entry.d_name;
 #else
    if (!rdir || !rdir->entry)
