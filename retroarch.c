@@ -16560,7 +16560,7 @@ static bool rarch_environment_cb(unsigned cmd, void *data)
                snprintf(s, sizeof(s), "[Environ]: GET_VARIABLE %s:\n\t%s\n",
                      var->key, var->value ? var->value :
                            msg_hash_to_str(MENU_ENUM_LABEL_VALUE_NOT_AVAILABLE));
-               RARCH_LOG(s);
+               RARCH_LOG("%s\n", s);
             }
          }
 
@@ -18685,8 +18685,6 @@ static char *get_temp_directory_alloc(const char *override_dir)
 #else
 #if defined ANDROID
    src                = override_dir;
-#elif defined(ORBIS)
-   src     = "/data/retroarch/temp";
 #else
    {
       char *tmpdir    = getenv("TMPDIR");
@@ -32974,18 +32972,18 @@ static void drivers_init(struct rarch_state *p_rarch,
    }
 
    /* Initialize audio driver */
-   if (flags & DRIVER_AUDIO_MASK)
-   {
-      audio_driver_init_internal(p_rarch,
-            settings,
-            p_rarch->audio_callback.callback != NULL);
-      if (  p_rarch->current_audio &&
-            p_rarch->current_audio->device_list_new &&
-            p_rarch->audio_driver_context_audio_data)
-         p_rarch->audio_driver_devices_list = (struct string_list*)
-            p_rarch->current_audio->device_list_new(
-                  p_rarch->audio_driver_context_audio_data);
-   }
+   // if (flags & DRIVER_AUDIO_MASK)
+   // {
+   //    audio_driver_init_internal(p_rarch,
+   //          settings,
+   //          p_rarch->audio_callback.callback != NULL);
+   //    if (  p_rarch->current_audio &&
+   //          p_rarch->current_audio->device_list_new &&
+   //          p_rarch->audio_driver_context_audio_data)
+   //       p_rarch->audio_driver_devices_list = (struct string_list*)
+   //          p_rarch->current_audio->device_list_new(
+   //                p_rarch->audio_driver_context_audio_data);
+   // }
 
    if (flags & DRIVER_CAMERA_MASK)
    {
@@ -34492,10 +34490,7 @@ static bool retroarch_parse_input_and_config(
    optstring = "hs:fvS:A:U:DN:d:"
       BSV_MOVIE_ARG NETPLAY_ARG DYNAMIC_ARG FFMPEG_RECORD_ARG CONFIG_FILE_ARG;
 
-#if defined(ORBIS)
-   argv      = &(argv[2]);
-   argc      = argc - 2;
-#elif defined(WEBOS)
+#if defined(WEBOS)
    argv      = &(argv[1]);
    argc      = argc - 1;
 #endif
@@ -35296,7 +35291,7 @@ bool retroarch_main_init(int argc, char *argv[])
             strlcat(str_output, "\n", sizeof(str_output));
          }
 
-         RARCH_LOG_OUTPUT(str_output);
+         RARCH_LOG_OUTPUT("%s\n", str_output);
       }
       {
          char str_output[256];
@@ -35318,7 +35313,7 @@ bool retroarch_main_init(int argc, char *argv[])
                msg_hash_to_str(MSG_CAPABILITIES),
                str);
 #endif
-         RARCH_LOG_OUTPUT(str_output);
+         RARCH_LOG_OUTPUT("%s\n", str_output);
       }
    }
 
