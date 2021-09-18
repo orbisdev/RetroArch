@@ -648,13 +648,25 @@ struct config_path_setting
 
 #define GENERAL_SETTING(key, configval, default_enable, default_setting, type, handle_setting) \
 { \
+   RARCH_LOG("Para Fran con cariño, [%x][%x]\n",tmp, count); \
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__); \
    tmp[count].ident      = key; \
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__); \
    tmp[count].ptr        = configval; \
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__); \
    tmp[count].def_enable = default_enable; \
-   if (default_enable) \
-      tmp[count].def     = default_setting; \
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__); \
+   if (default_enable) { \
+      RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__); \
+      RARCH_LOG("Default Settings, [%f], tmp[count] %x\n", default_setting, tmp[count]); \
+      tmp[count].def     = 0; \
+      RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__); \
+   } \
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__); \
    tmp[count].handle   = handle_setting; \
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__); \
    count++; \
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__); \
 }
 
 #define SETTING_BOOL(key, configval, default_enable, default_setting, handle_setting) \
@@ -1887,12 +1899,15 @@ static struct config_bool_setting *populate_settings_bool(
 static struct config_float_setting *populate_settings_float(
       settings_t *settings, int *size)
 {
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
+   RARCH_LOG("Size %i\n", (*size + 1) * sizeof(struct config_float_setting));
    unsigned count = 0;
    struct config_float_setting  *tmp      = (struct config_float_setting*)calloc(1, (*size + 1) * sizeof(struct config_float_setting));
 
    if (!tmp)
       return NULL;
 
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
    SETTING_FLOAT("video_aspect_ratio",       &settings->floats.video_aspect_ratio, true, DEFAULT_ASPECT_RATIO, false);
    SETTING_FLOAT("video_scale",              &settings->floats.video_scale, false, 0.0f, false);
    SETTING_FLOAT("crt_video_refresh_rate",   &settings->floats.crt_video_refresh_rate, true, DEFAULT_CRT_REFRESH_RATE, false);
@@ -1900,9 +1915,11 @@ static struct config_float_setting *populate_settings_float(
    SETTING_FLOAT("audio_rate_control_delta", audio_get_float_ptr(AUDIO_ACTION_RATE_CONTROL_DELTA), true, DEFAULT_RATE_CONTROL_DELTA, false);
    SETTING_FLOAT("audio_max_timing_skew",    &settings->floats.audio_max_timing_skew, true, DEFAULT_MAX_TIMING_SKEW, false);
    SETTING_FLOAT("audio_volume",             &settings->floats.audio_volume, true, DEFAULT_AUDIO_VOLUME, false);
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 #ifdef HAVE_AUDIOMIXER
    SETTING_FLOAT("audio_mixer_volume",       &settings->floats.audio_mixer_volume, true, DEFAULT_AUDIO_MIXER_VOLUME, false);
 #endif
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 #ifdef HAVE_OVERLAY
    SETTING_FLOAT("input_overlay_opacity",                 &settings->floats.input_overlay_opacity, true, DEFAULT_INPUT_OVERLAY_OPACITY, false);
    SETTING_FLOAT("input_overlay_scale_landscape",         &settings->floats.input_overlay_scale_landscape, true, DEFAULT_INPUT_OVERLAY_SCALE_LANDSCAPE, false);
@@ -1918,12 +1935,19 @@ static struct config_float_setting *populate_settings_float(
    SETTING_FLOAT("input_overlay_x_offset_portrait",       &settings->floats.input_overlay_x_offset_portrait, true, DEFAULT_INPUT_OVERLAY_X_OFFSET_PORTRAIT, false);
    SETTING_FLOAT("input_overlay_y_offset_portrait",       &settings->floats.input_overlay_y_offset_portrait, true, DEFAULT_INPUT_OVERLAY_Y_OFFSET_PORTRAIT, false);
 #endif
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 #ifdef HAVE_MENU
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
    SETTING_FLOAT("menu_scale_factor",        &settings->floats.menu_scale_factor, true, DEFAULT_MENU_SCALE_FACTOR, false);
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
    SETTING_FLOAT("menu_widget_scale_factor", &settings->floats.menu_widget_scale_factor, true, DEFAULT_MENU_WIDGET_SCALE_FACTOR, false);
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 #if !(defined(RARCH_CONSOLE) || defined(RARCH_MOBILE))
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
    SETTING_FLOAT("menu_widget_scale_factor_windowed", &settings->floats.menu_widget_scale_factor_windowed, true, DEFAULT_MENU_WIDGET_SCALE_FACTOR_WINDOWED, false);
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 #endif
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
    SETTING_FLOAT("menu_wallpaper_opacity",   &settings->floats.menu_wallpaper_opacity, true, menu_wallpaper_opacity, false);
    SETTING_FLOAT("menu_framebuffer_opacity", &settings->floats.menu_framebuffer_opacity, true, menu_framebuffer_opacity, false);
    SETTING_FLOAT("menu_footer_opacity",      &settings->floats.menu_footer_opacity,    true, menu_footer_opacity, false);
@@ -1933,7 +1957,9 @@ static struct config_float_setting *populate_settings_float(
 #if defined(HAVE_MATERIALUI) || defined(HAVE_XMB) || defined(HAVE_OZONE)
    SETTING_FLOAT("menu_screensaver_animation_speed", &settings->floats.menu_screensaver_animation_speed, true, DEFAULT_MENU_SCREENSAVER_ANIMATION_SPEED, false);
 #endif
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 #endif
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
    SETTING_FLOAT("video_message_pos_x",      &settings->floats.video_msg_pos_x,      true, message_pos_offset_x, false);
    SETTING_FLOAT("video_message_pos_y",      &settings->floats.video_msg_pos_y,      true, message_pos_offset_y, false);
    SETTING_FLOAT("video_font_size",          &settings->floats.video_font_size,      true, DEFAULT_FONT_SIZE, false);
@@ -1943,6 +1969,8 @@ static struct config_float_setting *populate_settings_float(
    SETTING_FLOAT("input_analog_deadzone",    &settings->floats.input_analog_deadzone, true, DEFAULT_ANALOG_DEADZONE, false);
    SETTING_FLOAT("input_analog_sensitivity",    &settings->floats.input_analog_sensitivity, true, DEFAULT_ANALOG_SENSITIVITY, false);
    SETTING_FLOAT("video_msg_bgcolor_opacity", &settings->floats.video_msg_bgcolor_opacity, true, message_bgcolor_opacity, false);
+
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    *size = count;
 
@@ -2254,6 +2282,7 @@ static void video_driver_default_settings(global_t *global)
  **/
 void config_set_defaults(void *data)
 {
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
    unsigned i, j;
 #ifdef HAVE_MENU
    static bool first_initialized   = true;
@@ -2265,6 +2294,7 @@ void config_set_defaults(void *data)
    int int_settings_size           = sizeof(settings->ints)    / sizeof(settings->ints.placeholder);
    int uint_settings_size          = sizeof(settings->uints)   / sizeof(settings->uints.placeholder);
    int size_settings_size          = sizeof(settings->sizes)   / sizeof(settings->sizes.placeholder);
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
    const char *def_video           = config_get_default_video();
    const char *def_audio           = config_get_default_audio();
    const char *def_audio_resampler = config_get_default_audio_resampler();
@@ -2273,6 +2303,7 @@ void config_set_defaults(void *data)
 #ifdef HAVE_MENU
    const char *def_menu            = config_get_default_menu();
 #endif
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
    const char *def_camera          = config_get_default_camera();
    const char *def_bluetooth       = config_get_default_bluetooth();
    const char *def_wifi            = config_get_default_wifi();
@@ -2280,12 +2311,21 @@ void config_set_defaults(void *data)
    const char *def_location        = config_get_default_location();
    const char *def_record          = config_get_default_record();
    const char *def_midi            = config_get_default_midi();
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
+
    const char *def_mitm            = DEFAULT_NETPLAY_MITM_SERVER;
    struct config_float_setting      *float_settings = populate_settings_float  (settings, &float_settings_size);
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
    struct config_bool_setting       *bool_settings  = populate_settings_bool  (settings, &bool_settings_size);
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
    struct config_int_setting        *int_settings   = populate_settings_int   (settings, &int_settings_size);
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
    struct config_uint_setting       *uint_settings  = populate_settings_uint   (settings, &uint_settings_size);
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
    struct config_size_setting       *size_settings  = populate_settings_size   (settings, &size_settings_size);
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
+
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    if (bool_settings && (bool_settings_size > 0))
    {
@@ -2320,6 +2360,8 @@ void config_set_defaults(void *data)
       free(uint_settings);
    }
 
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
+
    if (size_settings && (size_settings_size > 0))
    {
       for (i = 0; i < (unsigned)size_settings_size; i++)
@@ -2341,6 +2383,8 @@ void config_set_defaults(void *data)
 
       free(float_settings);
    }
+
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    if (def_camera)
       configuration_set_string(settings,
@@ -2403,6 +2447,8 @@ void config_set_defaults(void *data)
    *settings->paths.path_menu_xmb_font            = '\0';
 #endif
 
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
+
    configuration_set_string(settings,
          settings->arrays.discord_app_id,
          DEFAULT_DISCORD_APP_ID);
@@ -2417,6 +2463,8 @@ void config_set_defaults(void *data)
       settings->uints.menu_materialui_color_theme = g_defaults.menu_materialui_menu_color_theme;
 #endif
 #endif
+
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    settings->floats.video_scale                = DEFAULT_SCALE;
 
@@ -2456,6 +2504,8 @@ void config_set_defaults(void *data)
    load_timezone(settings->arrays.timezone);
 #endif
 
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
+
 #ifdef HAVE_MENU
    if (first_initialized)
       configuration_set_bool(settings,
@@ -2491,6 +2541,8 @@ void config_set_defaults(void *data)
          DEFAULT_BUILDBOT_ASSETS_SERVER_URL);
 
    *settings->arrays.input_keyboard_layout                = '\0';
+
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    for (i = 0; i < MAX_USERS; i++)
    {
@@ -2581,6 +2633,8 @@ void config_set_defaults(void *data)
    *settings->paths.log_dir = '\0';
 
    video_driver_default_settings(global);
+
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    if (!string_is_empty(g_defaults.dirs[DEFAULT_DIR_WALLPAPERS]))
       configuration_set_string(settings,
@@ -2684,6 +2738,8 @@ void config_set_defaults(void *data)
 #endif
    }
 #endif
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
+
 #ifdef HAVE_VIDEO_LAYOUT
    if (!string_is_empty(g_defaults.dirs[DEFAULT_DIR_VIDEO_LAYOUT]))
    {
@@ -2714,6 +2770,9 @@ void config_set_defaults(void *data)
       }
 #endif
    }
+
+
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    if (!string_is_empty(g_defaults.dirs[DEFAULT_DIR_MENU_CONTENT]))
       configuration_set_string(settings,
@@ -2776,6 +2835,7 @@ void config_set_defaults(void *data)
          settings->arrays.midi_output,
          DEFAULT_MIDI_OUTPUT);
 
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 #ifdef HAVE_CONFIGFILE
    /* Avoid reloading config on every content load */
    if (DEFAULT_BLOCK_CONFIG_READ)
@@ -2783,6 +2843,8 @@ void config_set_defaults(void *data)
    else
       rarch_ctl(RARCH_CTL_UNSET_BLOCK_CONFIG_READ, NULL);
 #endif
+
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
 #ifdef HAVE_MENU
    first_initialized = false;
@@ -2797,10 +2859,14 @@ void config_set_defaults(void *data)
  */
 void config_load(void *data)
 {
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
    global_t *global = (global_t*)data;
    config_set_defaults(global);
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 #ifdef HAVE_CONFIGFILE
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
    config_parse_file(global);
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 #endif
 }
 

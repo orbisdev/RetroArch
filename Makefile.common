@@ -293,7 +293,7 @@ else ifneq ($(findstring Darwin,$(OS)),)
 endif
 
 ifeq ($(TARGET), retroarch_orbis)
-	OBJ += $(LIBRETRO_COMM_DIR)/file/nbio/nbio_orbis.o
+	# OBJ += $(LIBRETRO_COMM_DIR)/file/nbio/nbio_orbis.o
 endif
 
 OBJ += \

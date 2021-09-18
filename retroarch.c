@@ -15723,6 +15723,8 @@ int rarch_main(int argc, char *argv[], void *data)
 
    retroarch_msg_queue_init();
 
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
+
    if (p_rarch->current_frontend_ctx)
    {
       content_ctx_info_t info;
@@ -15741,6 +15743,8 @@ int rarch_main(int argc, char *argv[], void *data)
                NULL))
          return 1;
    }
+
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    ui_companion_driver_init_first(p_rarch->configuration_settings,
          p_rarch);
@@ -34420,6 +34424,8 @@ static bool retroarch_parse_input_and_config(
       { NULL, 0, NULL, 0 }
    };
 
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
+
    if (first_run)
    {
       /* Copy the args into a buffer so launch arguments can be reused */
@@ -34441,6 +34447,8 @@ static bool retroarch_parse_input_and_config(
        * are triggered by RetroArch itself) */
       cli_active = true;
    }
+
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    /* Handling the core type is finicky. Based on the arguments we pass in,
     * we handle it differently.
@@ -34464,12 +34472,16 @@ static bool retroarch_parse_input_and_config(
     * bogus arguments.
     */
 
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
+
    if (!p_rarch->has_set_core)
       retroarch_set_current_core_type(CORE_TYPE_DUMMY, false);
 
    path_clear(RARCH_PATH_SUBSYSTEM);
 
    retroarch_override_setting_free_state();
+
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    p_rarch->has_set_username             = false;
 #ifdef HAVE_PATCH
@@ -34494,6 +34506,8 @@ static bool retroarch_parse_input_and_config(
    argv      = &(argv[1]);
    argc      = argc - 1;
 #endif
+
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
 #ifndef HAVE_MENU
    if (argc == 1)
@@ -34573,6 +34587,9 @@ static bool retroarch_parse_input_and_config(
          }
       }
    }
+
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
+
    verbosity_enabled = verbosity_is_enabled();
    /* Enable logging to file if verbosity and log-file arguments were passed.
     * RARCH_OVERRIDE_SETTING_LOG_TO_FILE is set by the RA_OPT_LOG_FILE case above
@@ -34580,11 +34597,15 @@ static bool retroarch_parse_input_and_config(
     * has not yet been initialized at this point. */
    if (verbosity_enabled && retroarch_override_setting_is_set(RARCH_OVERRIDE_SETTING_LOG_TO_FILE, NULL))
       rarch_log_file_init(true, false, NULL);
+   
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    /* Flush out some states that could have been set
     * by core environment variables. */
    p_rarch->current_core.has_set_input_descriptors = false;
    p_rarch->current_core.has_set_subsystems        = false;
+
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    /* Load the config file now that we know what it is */
 #ifdef HAVE_CONFIGFILE
@@ -34596,8 +34617,12 @@ static bool retroarch_parse_input_and_config(
 #if !defined(HAVE_DYNAMIC)
       config_load_file_salamander();
 #endif
+      RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
       config_load(&p_rarch->g_extern);
+      RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
    }
+
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    verbosity_enabled = verbosity_is_enabled();
    /* Init logging after config load only if not overridden by command line argument. 
@@ -34610,6 +34635,8 @@ static bool retroarch_parse_input_and_config(
             
    /* Second pass: All other arguments override the config file */
    optind = 1;
+
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    if (argc)
    {
@@ -35007,6 +35034,8 @@ static bool retroarch_parse_input_and_config(
       }
    }
 
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
+
 #ifdef HAVE_GIT_VERSION
    RARCH_LOG("RetroArch %s (Git %s)\n",
          PACKAGE_VERSION, retroarch_git_version);
@@ -35032,6 +35061,8 @@ static bool retroarch_parse_input_and_config(
 #endif
    }
 
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
+
    if (optind < argc)
    {
       bool subsystem_path_is_empty = path_is_empty(RARCH_PATH_SUBSYSTEM);
@@ -35049,6 +35080,8 @@ static bool retroarch_parse_input_and_config(
       cli_content_set = true;
    }
 
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
+
    /* Check whether a core has been set via the
     * command line interface */
    cli_core_set = (p_rarch->current_core_type != CORE_TYPE_DUMMY);
@@ -35065,6 +35098,8 @@ static bool retroarch_parse_input_and_config(
    if (retroarch_override_setting_is_set(RARCH_OVERRIDE_SETTING_STATE_PATH, NULL) &&
          path_is_directory(global->name.savestate))
       dir_set(RARCH_DIR_SAVESTATE, global->name.savestate);
+
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    return verbosity_enabled;
 }
@@ -35238,6 +35273,8 @@ bool retroarch_main_init(int argc, char *argv[])
    unsigned accessibility_narrator_speech_speed = 0;
 #endif
 
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
+
    p_rarch->osk_idx             = OSK_LOWERCASE_LATIN;
    p_rarch->video_driver_active = true;
    p_rarch->audio_driver_active = true;
@@ -35251,10 +35288,16 @@ bool retroarch_main_init(int argc, char *argv[])
 
    p_rarch->rarch_error_on_init = true;
 
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
+
    /* Have to initialise non-file logging once at the start... */
    retro_main_log_file_init(NULL, false);
 
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
+
    verbosity_enabled = retroarch_parse_input_and_config(p_rarch, &p_rarch->g_extern, argc, argv);
+
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
 #ifdef HAVE_ACCESSIBILITY
    accessibility_enable                = settings->bools.accessibility_enable;
@@ -35271,9 +35314,13 @@ bool retroarch_main_init(int argc, char *argv[])
             10);
 #endif
 
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
    if (verbosity_enabled)
    {
+      RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
       {
+
+         RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
          char str_output[256];
          const char *cpu_model  = NULL;
          str_output[0] = '\0';
@@ -35324,6 +35371,8 @@ bool retroarch_main_init(int argc, char *argv[])
    ExcHndlInit();
    ExcHndlSetLogFileNameA(log_file_name);
 #endif
+
+   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    retroarch_validate_cpu_features(p_rarch);
    retroarch_init_task_queue();

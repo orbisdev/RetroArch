@@ -1,13 +1,12 @@
 ﻿#include <stdlib.h>
-#if defined(HAVE_OOSDK)
-#include <orbis/libkernel.h>
-#include <orbis/LibcInternal.h>
-#else
-#include <kernel.h>
-#include <mspace.h>
-#endif
-#include "../../defines/ps4_defines.h"
-#include "user_mem.h"
+#include <stdarg.h>
+#include <string.h>
+#include <libkernel.h>
+#include <orbis/libSceLibcInternal.h>
+
+#include <defines/ps4_defines.h>
+#include <user_mem.h>
+#include <verbosity.h>
 
 static OrbisMspace s_mspace = 0;
 static OrbisMallocManagedSize s_mmsize;
@@ -16,26 +15,30 @@ static size_t s_mem_size = MEM_SIZE;
 
 int malloc_init(void)
 {
+   printf("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
   int res;
 
   if (s_mspace)
     return 0;
-
+   printf("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
   res = sceKernelReserveVirtualRange(&s_mem_start, MEM_SIZE, 0, MEM_ALIGN);
   if (res < 0)
     return 1;
-
+   printf("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
   res = sceKernelMapNamedSystemFlexibleMemory(&s_mem_start, MEM_SIZE, SCE_KERNEL_PROT_CPU_RW, SCE_KERNEL_MAP_FIXED, "User Mem");
   if (res < 0)
     return 1;
-
+   printf("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
   s_mspace = sceLibcMspaceCreate("User Mspace", s_mem_start, s_mem_size, 0);
   if (!s_mspace)
     return 1;
 
+   printf("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
   s_mmsize.sz = sizeof(s_mmsize);
   s_mmsize.ver = 1;
+  printf("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
   res = sceLibcMspaceMallocStatsFast(s_mspace, &s_mmsize);
+  printf("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
   return 0;
 }
 
