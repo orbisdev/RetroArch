@@ -124,9 +124,9 @@ input_device_driver_t *joypad_drivers[] = {
 #ifdef _XBOX1
    &xdk_joypad,
 #endif
-// #if defined(ORBIS)
-//    &ps4_joypad,
-// #endif
+#if defined(ORBIS)
+   &ps4_joypad,
+#endif
 #if defined(__PSL1GHT__) || defined(__PS3__)
    &ps3_joypad,
 #endif
@@ -186,9 +186,9 @@ input_device_driver_t *joypad_drivers[] = {
 };
 
 input_driver_t *input_drivers[] = {
-// #ifdef ORBIS
-//    &input_ps4,
-// #endif
+#ifdef ORBIS
+   &input_ps4,
+#endif
 #if defined(__PSL1GHT__) || defined(__PS3__)
    &input_ps3,
 #endif

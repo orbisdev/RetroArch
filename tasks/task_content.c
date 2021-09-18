@@ -1437,9 +1437,6 @@ static bool content_load(content_ctx_info_t *info,
    int *rarch_argc_ptr               = (int*)&info->argc;
    struct rarch_main_wrap *wrap_args = NULL;
 
-
-   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
-
    if (!(wrap_args = (struct rarch_main_wrap*)
       malloc(sizeof(*wrap_args))))
       return false;
@@ -1472,14 +1469,10 @@ static bool content_load(content_ctx_info_t *info,
 
    rarch_ctl(RARCH_CTL_MAIN_DEINIT, NULL);
 
-   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
-
    wrap_args->argc = *rarch_argc_ptr;
    wrap_args->argv = rarch_argv_ptr;
 
    success         = retroarch_main_init(wrap_args->argc, wrap_args->argv);
-
-   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    for (i = 0; i < ARRAY_SIZE(argv_copy); i++)
       free(argv_copy[i]);
@@ -1493,8 +1486,6 @@ static bool content_load(content_ctx_info_t *info,
       command_event(CMD_EVENT_CORE_INIT, NULL);
       content_clear_subsystem();
    }
-
-   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
 #ifdef HAVE_GFX_WIDGETS
 #ifdef HAVE_CONFIGFILE
@@ -1517,8 +1508,6 @@ static bool content_load(content_ctx_info_t *info,
    menu_shader_manager_init();
 #endif
 
-   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
-
    command_event(CMD_EVENT_HISTORY_INIT, NULL);
    rarch_favorites_init();
    command_event(CMD_EVENT_RESUME, NULL);
@@ -1526,8 +1515,6 @@ static bool content_load(content_ctx_info_t *info,
 
    frontend_driver_process_args(rarch_argc_ptr, rarch_argv_ptr);
    frontend_driver_content_loaded();
-
-   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    return true;
 }
@@ -1548,8 +1535,6 @@ static void task_push_to_history_list(
 {
    bool            contentless = false;
    bool            is_inited   = false;
-
-   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    content_get_status(&contentless, &is_inited);
 
@@ -2305,7 +2290,6 @@ static bool task_load_content_internal(
    content_ctx.subsystem.data                 = NULL;
    content_ctx.subsystem.size                 = 0;
 
-   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
    if (sys_info)
    {
       struct retro_system_info *system        = runloop_get_libretro_system_info();
@@ -2324,8 +2308,6 @@ static bool task_load_content_internal(
       content_ctx.subsystem.size              = sys_info->subsystem.size;
    }
 
-   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
-
    if (global)
    {
       if (!string_is_empty(global->name.ips))
@@ -2336,8 +2318,6 @@ static bool task_load_content_internal(
          content_ctx.name_ups                 = strdup(global->name.ups);
    }
 
-   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
-
    if (!string_is_empty(path_dir_system))
       content_ctx.directory_system            = strdup(path_dir_system);
 
@@ -2346,8 +2326,6 @@ static bool task_load_content_internal(
 
    if (firmware_update_status(&content_ctx))
       goto end;
-   
-   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
 #ifdef HAVE_DISCORD
    if (discord_is_inited)
@@ -2360,16 +2338,10 @@ static bool task_load_content_internal(
    }
 #endif
 
-   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
-
    /* Loads content into currently selected core. */
-   if ((ret = content_load(content_info, p_content))) {
-      RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
+   if ((ret = content_load(content_info, p_content)))
       task_push_to_history_list(p_content,
             true, loading_from_cli, loading_from_companion_ui);
-   }
-
-   RARCH_LOG("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
 end:
    if (content_ctx.name_ips)

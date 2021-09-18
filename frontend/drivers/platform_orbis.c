@@ -54,7 +54,7 @@
 #include <libSceSysmodule.h>
 #include <defines/ps4_defines.h>
 
-#include "user_mem.h"
+// #include "user_mem.h"
 
 #include <pthread.h>
 
@@ -122,36 +122,36 @@ SceKernelModule s_shacc_module;
 
 static enum frontend_fork orbis_fork_mode = FRONTEND_FORK_NONE;
 
-// #define MEM_SIZE (3UL * 1024 * 1024 * 1024) /* 2600 MiB */
-// #define MEM_ALIGN (16UL * 1024)
+#define MEM_SIZE (3UL * 1024 * 1024 * 1024) /* 2600 MiB */
+#define MEM_ALIGN (16UL * 1024)
 
-// const char *sceKernelGetFsSandboxRandomWord();
-// int sceKernelMapNamedSystemFlexibleMemory(void** addrInOut, size_t len, int prot, int flags, const char* name);
-// typedef void* OrbisMspace;
+const char *sceKernelGetFsSandboxRandomWord();
+int sceKernelMapNamedSystemFlexibleMemory(void** addrInOut, size_t len, int prot, int flags, const char* name);
+typedef void* OrbisMspace;
 
-// OrbisMspace sceLibcMspaceCreate(char *, void *, size_t, void *);
-// void * sceLibcMspaceMalloc(OrbisMspace, size_t size);
-// void sceLibcMspaceFree(OrbisMspace, void *);
+OrbisMspace sceLibcMspaceCreate(char *, void *, size_t, void *);
+void * sceLibcMspaceMalloc(OrbisMspace, size_t size);
+void sceLibcMspaceFree(OrbisMspace, void *);
 
 
-// static OrbisMspace s_mspace = 0;
-// static void *address = 0;
-// static size_t s_mem_size = MEM_SIZE;
+static OrbisMspace s_mspace = 0;
+static void *address = 0;
+static size_t s_mem_size = MEM_SIZE;
 
-// static int max_malloc(size_t initial_value, int increment, const char *desc)
-// {
-//     char *p_block;
-//     size_t chunk = initial_value;
+static int max_malloc(size_t initial_value, int increment, const char *desc)
+{
+    char *p_block;
+    size_t chunk = initial_value;
 
-//     printf("Check maximum contigous block we can allocate (%s accurate)\n", desc);
-//     while ((p_block = sceLibcMspaceMalloc(s_mspace, ++chunk * increment)) != NULL) {
-//         sceLibcMspaceFree(s_mspace,p_block);
-//     }
-//     chunk--;
-//     printf("Maximum possible %s we can allocate is %i\n", desc, chunk);
+    printf("Check maximum contigous block we can allocate (%s accurate)\n", desc);
+    while ((p_block = sceLibcMspaceMalloc(s_mspace, ++chunk * increment)) != NULL) {
+        sceLibcMspaceFree(s_mspace,p_block);
+    }
+    chunk--;
+    printf("Maximum possible %s we can allocate is %i\n", desc, chunk);
 
-//     return chunk;
-// }
+    return chunk;
+}
 
 #if defined(HAVE_TAUON_SDK)
 void catchReturnFromMain(int exit_code)
@@ -309,17 +309,17 @@ static void frontend_orbis_shutdown(bool unused)
    return;
 }
 
-// static void prepareMemoryAllocation()
-// {
-//    int res = sceKernelReserveVirtualRange(&address, MEM_SIZE, 0, MEM_ALIGN);
-// 	printf("sceKernelReserveVirtualRange %x %x\n", res, address);
-// 	res = sceKernelMapNamedSystemFlexibleMemory(&address, MEM_SIZE, 0x2, 0x0010, "TEST");
-// 	printf("sceKernelMapNamedSystemFlexibleMemory %x %x\n", res, address);
-// 	s_mspace = sceLibcMspaceCreate("User Mspace", address, MEM_SIZE, 0);
-// 	printf("sceLibcMspaceCreate %p \n", s_mspace);
+static void prepareMemoryAllocation()
+{
+   int res = sceKernelReserveVirtualRange(&address, MEM_SIZE, 0, MEM_ALIGN);
+	printf("sceKernelReserveVirtualRange %x %x\n", res, address);
+	res = sceKernelMapNamedSystemFlexibleMemory(&address, MEM_SIZE, 0x2, 0x0010, "TEST");
+	printf("sceKernelMapNamedSystemFlexibleMemory %x %x\n", res, address);
+	s_mspace = sceLibcMspaceCreate("User Mspace", address, MEM_SIZE, 0);
+	printf("sceLibcMspaceCreate %p \n", s_mspace);
 
-//    printf("TOTAL MEMORY %d %s\n", max_malloc(0, 1024 * 1024, "MB"), "MB");
-// }
+   printf("TOTAL MEMORY %d %s\n", max_malloc(0, 1024 * 1024, "MB"), "MB");
+}
 
 static bool initApp()
 {
@@ -340,7 +340,7 @@ static void frontend_orbis_init(void *data)
    printf("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
    int ret=initApp();
    printf("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
-   // prepareMemoryAllocation();
+   prepareMemoryAllocation();
    printf("[%s][%s][%d]\n",__FILE__,__PRETTY_FUNCTION__,__LINE__);
 
    logger_init();

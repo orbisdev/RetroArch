@@ -490,9 +490,9 @@ static const audio_driver_t *audio_drivers[] = {
 #ifdef EMSCRIPTEN
    &audio_rwebaudio,
 #endif
-// #if defined(PSP) || defined(VITA) || defined(ORBIS)
-//   &audio_psp,
-// #endif
+#if defined(PSP) || defined(VITA) || defined(ORBIS)
+  &audio_psp,
+#endif
 #if defined(PS2)
   &audio_ps2,
 #endif
@@ -731,9 +731,9 @@ static const gfx_ctx_driver_t *gfx_ctx_vk_drivers[] = {
 #endif
 
 static const gfx_ctx_driver_t *gfx_ctx_gl_drivers[] = {
-// #if defined(ORBIS)
-//    &orbis_ctx,
-// #endif
+#if defined(ORBIS)
+   &orbis_ctx,
+#endif
 #if defined(HAVE_VITAGL) | defined(HAVE_VITAGLES)
    &vita_ctx,
 #endif
