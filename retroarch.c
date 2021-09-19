@@ -32972,18 +32972,18 @@ static void drivers_init(struct rarch_state *p_rarch,
    }
 
    /* Initialize audio driver */
-   // if (flags & DRIVER_AUDIO_MASK)
-   // {
-   //    audio_driver_init_internal(p_rarch,
-   //          settings,
-   //          p_rarch->audio_callback.callback != NULL);
-   //    if (  p_rarch->current_audio &&
-   //          p_rarch->current_audio->device_list_new &&
-   //          p_rarch->audio_driver_context_audio_data)
-   //       p_rarch->audio_driver_devices_list = (struct string_list*)
-   //          p_rarch->current_audio->device_list_new(
-   //                p_rarch->audio_driver_context_audio_data);
-   // }
+   if (flags & DRIVER_AUDIO_MASK)
+   {
+      audio_driver_init_internal(p_rarch,
+            settings,
+            p_rarch->audio_callback.callback != NULL);
+      if (  p_rarch->current_audio &&
+            p_rarch->current_audio->device_list_new &&
+            p_rarch->audio_driver_context_audio_data)
+         p_rarch->audio_driver_devices_list = (struct string_list*)
+            p_rarch->current_audio->device_list_new(
+                  p_rarch->audio_driver_context_audio_data);
+   }
 
    if (flags & DRIVER_CAMERA_MASK)
    {
